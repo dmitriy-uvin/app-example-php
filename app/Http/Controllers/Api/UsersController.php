@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\DTO\User\CreateUserDTOServiceIn;
+use App\DTO\User\DeleteUserByIdDTOServiceIn;
 use App\DTO\User\UserByIdDTOServiceIn;
 use App\DTO\User\UsersListDTOServiceIn;
 use App\Exceptions\Http\PasswordsMismatchHttpError;
@@ -38,10 +39,10 @@ final class UsersController extends BaseApiController
     /**
      * @throws UserNotFoundHttpError
      */
-    public function findById(Request $request): JsonResponse
+    public function findById(int $id): JsonResponse
     {
         $response = $this->userService->getById(
-            new UserByIdDTOServiceIn($request->id)
+            new UserByIdDTOServiceIn($id)
         );
 
         return $this->respondSuccess($response->getUser()->toArray());
@@ -66,5 +67,17 @@ final class UsersController extends BaseApiController
             $response->getUser()->toArray(),
             Response::HTTP_CREATED
         );
+    }
+
+    /**
+     * @throws UserNotFoundHttpError
+     */
+    public function delete(int $id): JsonResponse
+    {
+        $this->userService->deleteById(
+            new DeleteUserByIdDTOServiceIn($id)
+        );
+
+        return $this->respondSuccess([], Response::HTTP_NO_CONTENT);
     }
 }

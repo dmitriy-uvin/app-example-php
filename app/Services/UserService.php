@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DTO\User\CreateUserDTORepoIn;
 use App\DTO\User\CreateUserDTOServiceIn;
 use App\DTO\User\CreateUserDTOServiceOut;
+use App\DTO\User\DeleteUserByIdDTOServiceIn;
 use App\DTO\User\UserByIdDTOServiceIn;
 use App\DTO\User\UserByIdDTOServiceOut;
 use App\DTO\User\UsersListDTOServiceIn;
@@ -61,5 +62,14 @@ final class UserService
         );
 
         return new CreateUserDTOServiceOut($createdUser);
+    }
+
+    public function deleteById(DeleteUserByIdDTOServiceIn $dto): void
+    {
+        $user = $this->usersRepository->getById($dto->getId());
+        if (!$user) {
+            throw new UserNotFoundHttpError();
+        }
+        $this->usersRepository->deleteById($dto->getId());
     }
 }

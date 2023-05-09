@@ -9,7 +9,6 @@ use App\Helpers\DatabaseHelper;
 use App\Models\User;
 use App\Repository\Contracts\UsersRepositoryInterface;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Hash;
 
 final class UsersRepository implements UsersRepositoryInterface
 {
@@ -17,7 +16,7 @@ final class UsersRepository implements UsersRepositoryInterface
 
     public function getById(int $id): ?User
     {
-        return User::findById($id);
+        return User::find($id);
     }
 
     public function getByEmail(string $email): ?User
@@ -25,8 +24,10 @@ final class UsersRepository implements UsersRepositoryInterface
         return User::where('email', '=', $email)->first();
     }
 
-    public function getAllPaginated(?int $page = 1, ?int $perPage = self::DEFAULT_PER_PAGE): Collection
+    public function getAllPaginated(?int $page, ?int $perPage): Collection
     {
+        $page = $page ?: 1;
+        $perPage = $perPage ?: self::DEFAULT_PER_PAGE;
         $offset = DatabaseHelper::offset($page, $perPage);
         return User::query()->limit($perPage)->offset($offset)->get();
     }
@@ -39,5 +40,11 @@ final class UsersRepository implements UsersRepositoryInterface
         $user->password = $dto->getPassword();
         $user->save();
         return $user;
+    }
+
+    public function deleteById(int $id): void
+    {
+        $user = User::find($id);
+        $user->delete();
     }
 }

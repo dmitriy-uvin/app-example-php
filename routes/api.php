@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CarsController;
 use App\Http\Controllers\Api\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,10 @@ Route::prefix('/users')->group(function () {
    Route::get('/', [UsersController::class, 'listAll']);
    Route::get('/{id}', [UsersController::class, 'findById']);
    Route::post('/', [UsersController::class, 'create']);
+   Route::delete('/{id}', [UsersController::class, 'delete']);
+});
+
+Route::prefix('/cars')->group(function () {
+    Route::post('/', [CarsController::class, 'create']);
+    Route::delete('/', [CarsController::class, 'delete']);
 });

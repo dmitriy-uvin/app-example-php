@@ -12,4 +12,5 @@ interface UsersRepositoryInterface
     public function getByEmail(string $email): ?User;
     public function getAllPaginated(?int $page, ?int $perPage): Collection;
     public function create(CreateUserDTORepoIn $dto): User;
+    public function deleteById(int $id): void;
 }
