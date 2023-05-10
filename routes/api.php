@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\CarsController;
 use App\Http\Controllers\Api\UsersController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,18 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::prefix('/users')->group(function () {
    Route::get('/', [UsersController::class, 'listAll']);
    Route::get('/{id}', [UsersController::class, 'findById']);
+   Route::get('/{id}/full', [UsersController::class, 'findByIdFull']);
    Route::post('/', [UsersController::class, 'create']);
    Route::delete('/{id}', [UsersController::class, 'delete']);
 });
 
 Route::prefix('/cars')->group(function () {
-    Route::post('/', [CarsController::class, 'create']);
-    Route::delete('/', [CarsController::class, 'delete']);
+    Route::get('/{id}', [CarsController::class, 'getById']);
+    Route::get('/{id}/full', [CarsController::class, 'getByIdFull']);
 });

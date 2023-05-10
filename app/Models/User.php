@@ -44,6 +44,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $primaryKey = 'id';
+
     public function cars(): HasMany
     {
         return $this->hasMany(Car::class);

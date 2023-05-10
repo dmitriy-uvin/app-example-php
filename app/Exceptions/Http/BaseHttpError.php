@@ -19,8 +19,8 @@ abstract class BaseHttpError extends Exception
         ?Throwable $previous = null,
         int $code = 0
     ) {
-        $this->statusCode = $statusCode;
-        parent::__construct($message, $code, $previous);
+        $this->statusCode = $this->statusCode ?: $statusCode;
+        parent::__construct($message ?: $this->message, $code, $previous);
     }
 
     /**

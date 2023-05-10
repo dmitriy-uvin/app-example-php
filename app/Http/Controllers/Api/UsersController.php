@@ -28,9 +28,10 @@ final class UsersController extends BaseApiController
     {
         $page = $request->page ? (int)$request->page : null;
         $perPage = $request->per_page ? (int)$request->per_page : null;
+        $withCars = (bool)$request->with_cars;
 
         $response = $this->userService->fetchList(
-            new UsersListDTOServiceIn($page, $perPage)
+            new UsersListDTOServiceIn($page, $perPage, $withCars)
         );
 
         return $this->respondSuccess($response->getUsers()->toArray());
@@ -42,6 +43,18 @@ final class UsersController extends BaseApiController
     public function findById(int $id): JsonResponse
     {
         $response = $this->userService->getById(
+            new UserByIdDTOServiceIn($id)
+        );
+
+        return $this->respondSuccess($response->getUser()->toArray());
+    }
+
+    /**
+     * @throws UserNotFoundHttpError
+     */
+    public function findByIdFull(int $id): JsonResponse
+    {
+        $response = $this->userService->getByIdFull(
             new UserByIdDTOServiceIn($id)
         );
 

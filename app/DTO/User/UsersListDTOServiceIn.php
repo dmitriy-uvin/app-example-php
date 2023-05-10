@@ -9,7 +9,16 @@ final class UsersListDTOServiceIn
     public function __construct(
         private readonly ?int $page,
         private readonly ?int $perPage,
+        private readonly bool $withCars = false
     ) {
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithCars(): bool
+    {
+        return $this->withCars;
     }
 
     /**

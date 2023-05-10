@@ -10,6 +10,7 @@ use App\DTO\User\CreateUserDTOServiceOut;
 use App\DTO\User\DeleteUserByIdDTOServiceIn;
 use App\DTO\User\UserByIdDTOServiceIn;
 use App\DTO\User\UserByIdDTOServiceOut;
+use App\DTO\User\UsersListDTORepoIn;
 use App\DTO\User\UsersListDTOServiceIn;
 use App\DTO\User\UsersListDTOServiceOut;
 use App\Exceptions\Http\PasswordsMismatchHttpError;
@@ -27,7 +28,9 @@ final class UserService
 
     public function fetchList(UsersListDTOServiceIn $dto): UsersListDTOServiceOut
     {
-        $users = $this->usersRepository->getAllPaginated($dto->getPage(), $dto->getPerPage());
+        $users = $this->usersRepository->getAllPaginated(
+            new UsersListDTORepoIn($dto->getPage(), $dto->getPerPage(), $dto->isWithCars())
+        );
         return new UsersListDTOServiceOut($users);
     }
 
@@ -43,6 +46,22 @@ final class UserService
         return new UserByIdDTOServiceOut($user);
     }
 
+    /**
+     * @throws UserNotFoundHttpError
+     */
+    public function getByIdFull(UserByIdDTOServiceIn $dto): UserByIdDTOServiceOut
+    {
+        $user = $this->usersRepository->getByIdFull($dto->getId());
+        if (!$user) {
+            throw new UserNotFoundHttpError();
+        }
+        return new UserByIdDTOServiceOut($user);
+    }
+
+    /**
+     * @throws UserAlreadyExistsHttpError
+     * @throws PasswordsMismatchHttpError
+     */
     public function createUser(CreateUserDTOServiceIn $dto): CreateUserDTOServiceOut
     {
         $user = $this->usersRepository->getByEmail($dto->getEmail());
@@ -64,6 +83,9 @@ final class UserService
         return new CreateUserDTOServiceOut($createdUser);
     }
 
+    /**
+     * @throws UserNotFoundHttpError
+     */
     public function deleteById(DeleteUserByIdDTOServiceIn $dto): void
     {
         $user = $this->usersRepository->getById($dto->getId());
